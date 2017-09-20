@@ -45,8 +45,8 @@ const printHostingInstructions = require('react-dev-utils/printHostingInstructio
 /**
  * 在传递的buildFolder中捕获JS和CSS资源大小。保存结果值，以便在构建后进行比较
  */
-const {measureFileSizesBeforeBuild, printFileSizesAfterBuild} = require('react-dev-utils/FileSizeReporter');
-/**
+const {measureFileSizesBeforeBuild, printFileSizesAfterBuild} = require('react-dev-utils/FileSizeReporter')
+/**;
  * 预处理一些已知的构建错误
  */
 const printBuildError = require('react-dev-utils/printBuildError');

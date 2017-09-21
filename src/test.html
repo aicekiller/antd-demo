@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+<div class='wrapper'>
+
+</div>
+<script>
+    //    const button = document.querySelector('.like-btn');
+    //    const butttonText = document.querySelector('.like-text');
+    //    var flag = true;
+    //    button.addEventListener('click', () => {
+    //        flag = !flag;
+    //        if (flag) {
+    //            butttonText.innerText = '点赞';
+    //        } else {
+    //            butttonText.innerText = '取消';
+    //        }
+    //    });
+
+    const createDomFromString = (str) => {
+        const div = document.createElement('div');
+        div.innerHTML = str;
+        return div;
+    }
+
+    class LikeButton {
+        constructor() {
+            this.state = {
+                flag: true
+            }
+        }
+
+        handClick() {
+            const ele = this.el.querySelector('.like-text');
+            this.state = {
+                flag: !this.state.flag
+            }
+            ele.innerText = this.state.flag ? '点赞' : '取消';
+
+        }
+
+        render() {
+            this.el = createDomFromString(`
+                <button class='like-button'>
+                  <span class='like-text'>点赞</span>
+                  <span>👍</span>
+                </button>
+              `);
+            this.el.addEventListener('click', this.handClick.bind(this), false);
+            return this.el;
+        }
+    }
+
+    const wrap = document.querySelector('.wrapper');
+    const buttonOne = new LikeButton();
+    wrap.appendChild(buttonOne.render());
+</script>
+</body>
+</html>

@@ -16,89 +16,55 @@ function calculateWinner(squares) {
     for (let i = 0; i < lines.length; i++) {
         const [a, b, c] = lines[i];
         if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-            return squares[a];
+            return {
+                winner: squares[a],
+                line: lines[i]
+            }
         }
     }
-    return null;
+    return {winner: null, line: []};
 }
 
-class Square extends Component {
-    constructor() {
-        super();
-        this.state = {
-            value: null
-        }
-    }
-
-    render() {
+function Square(props) {
+    if (props.highlight) {
         return (
-            <button className="square" onClick={() => this.props.onClick()}>
-                {this.props.value}
+            <button className="square" style={{color: 'red'}} onClick={props.onClick}>
+                {props.value}
             </button>
         );
     }
+    return (
+        <button className="square" onClick={props.onClick}>
+            {props.value}
+        </button>
+    );
 }
 
 class Board extends Component {
-    constructor() {
-        super();
-        this.state = {
-            squares: Array(9).fill(null),
-            xIsNext: true
-        }
-    }
-
-    handClick(i) {
-
-        const squares = this.state.squares.slice();
-        if (calculateWinner(squares)) {
-            return;
-        } else {
-            squares[i] = this.state.xIsNext ? 'X' : 'O';
-            this.setState({
-                squares: squares,
-                xIsNext: !this.state.xIsNext
-            });
-        }
-
-    }
 
     renderSquare(i) {
         return (
             <Square
-                onClick={this.handClick.bind(this, i)}
-                value={this.state.squares[i]}
+                key={i}
+                highlight={this.props.winnerLine.includes(i)}
+                onClick={() => this.props.onClick(i)}
+                value={this.props.squares[i]}
             />
         );
     }
 
     render() {
-        const winner = calculateWinner(this.state.squares);
-        let status;
-        if (winner) {
-            status = `winner player: ${winner}`;
-        } else {
-            status = `Next player: ${this.state.xIsNext ? 'X' : 'O'}`;
+        var rows = [];
+        for (var i = 0; i < 3; i++) {
+            var row = [];
+            for (var j = 3 * i; j < 3 * i + 3; j++) {
+                row.push(this.renderSquare(j));
+            }
+            rows.push(<div className="board-row" key={i}>{row}</div>);
         }
-
         return (
             <div>
-                <div className="status">{status}</div>
-                <div className="board-row">
-                    {this.renderSquare(0)}
-                    {this.renderSquare(1)}
-                    {this.renderSquare(2)}
-                </div>
-                <div className="board-row">
-                    {this.renderSquare(3)}
-                    {this.renderSquare(4)}
-                    {this.renderSquare(5)}
-                </div>
-                <div className="board-row">
-                    {this.renderSquare(6)}
-                    {this.renderSquare(7)}
-                    {this.renderSquare(8)}
-                </div>
+                {rows}
             </div>
         );
     }
@@ -107,18 +73,86 @@ class Board extends Component {
 class Game extends Component {
     constructor() {
         super();
+        this.state = {
+            history: [{
+                squares: Array(9).fill(null),
+            }],
+            stepNumber: 0,
+            xIsNext: true,
+        };
+    }
+
+    handleClick(i) {
+        const history = this.state.history.slice(0, this.state.stepNumber + 1);
+        const current = history[history.length - 1];
+        const squares = current.squares.slice();
+        const winner = calculateWinner(squares).winner;
+        if (winner || squares[i]) {
+            return;
+        }
+        squares[i] = this.state.xIsNext ? 'X' : 'O';
+        this.setState({
+            history: history.concat([{
+                squares: squares
+            }]),
+            stepNumber: history.length,
+            xIsNext: !this.state.xIsNext,
+        });
+
+    }
+
+    jumpTo(step) {
+        this.setState({
+            stepNumber: step,
+            xIsNext: (step % 2) ? false : true
+        })
     }
 
     render() {
+        const history = this.state.history;
+        const current = history[this.state.stepNumber];
+        const winner = calculateWinner(current.squares).winner;
+        const winnerLine = calculateWinner(current.squares).line;
+
+        const moves = history.map((step, move) => {
+            const desc = move ?
+                'Move #' + move :
+                'Game start';
+            if (move == this.state.stepNumber) {
+                return (
+                    <li key={move}>
+                        <a href="#" onClick={() => this.jumpTo(move)}>
+                            <strong>{desc}</strong>
+                        </a>
+                    </li>
+                );
+            }
+            return (
+                <li key={move}>
+                    <a href="#" onClick={() => this.jumpTo(move)}>{desc}</a>
+                </li>
+            );
+        });
+
+        let status;
+        if (winner) {
+            status = 'Winner: ' + winner;
+        } else {
+            status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
+        }
+
         return (
             <div className="game">
                 <div className="game-board">
-                    <Board />
+                    <Board
+                        winnerLine={winnerLine}
+                        squares={current.squares}
+                        onClick={(i) => this.handleClick(i)}
+                    />
                 </div>
                 <div className="game-info">
-                    <img src={require('./logo.svg')} alt=""/>
-                    <div>{/* status */}</div>
-                    <ol>{/* TODO */}</ol>
+                    <div>{status}</div>
+                    <ol>{moves}</ol>
                 </div>
             </div>
         );

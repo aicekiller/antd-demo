@@ -6,117 +6,130 @@ class CommentApp extends Component {
     constructor() {
         super();
         this.state = {
-            list: []
+            comments: []
         }
     }
 
-    handleCommentSubmit(comment) {
-        this.state.list.push(comment);
+    handleSubmitComment(comment) {
+        if (!comment) return;
+        if (!comment.username) return alert('请输入用户名');
+        if (!comment.content) return alert('请输入评论内容');
+        this.state.comments.push(comment);
         this.setState({
-            list: this.state.list
-        })
+            comments: this.state.comments
+        });
     }
 
     render() {
         return (
             <div className="wrapper">
-                <CommentInput onCommentSubmit={this.handleCommentSubmit.bind(this)}/>
-                <CommentList dataList={this.state.list}/>
+                <CommentInput onSubmit={this.handleSubmitComment.bind(this)}/>
+                <CommentList comments={this.state.comments}/>
+            </div>
+        );
+    }
+}
+
+
+class CommentInput extends Component {
+    constructor() {
+        super()
+        this.state = {
+            username: '',
+            content: ''
+        }
+    }
+
+    handleUsernameChange(event) {
+        this.setState({
+            username: event.target.value
+        })
+    }
+
+    handleContentChange(event) {
+        this.setState({
+            content: event.target.value
+        })
+    }
+
+    handleSubmit() {
+        if (this.props.onSubmit) {
+            this.props.onSubmit({
+                username: this.state.username,
+                content: this.state.content,
+            })
+        }
+        this.setState({content: ''})
+    }
+
+    render() {
+        return (
+            <div className='comment-input'>
+                <div className='comment-field'>
+                    <span className='comment-field-name'>用户名：</span>
+                    <div className='comment-field-input'>
+                        <input
+                            value={this.state.username}
+                            onChange={this.handleUsernameChange.bind(this)}/>
+                    </div>
+                </div>
+                <div className='comment-field'>
+                    <span className='comment-field-name'>评论内容：</span>
+                    <div className='comment-field-input'>
+                        <textarea
+                            value={this.state.content}
+                            onChange={this.handleContentChange.bind(this)}/>
+                    </div>
+                </div>
+                <div className='comment-field-button'>
+                    <button
+                        onClick={this.handleSubmit.bind(this)}>
+                        发布
+                    </button>
+                </div>
             </div>
         )
     }
 }
 
-class CommentInput extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            author: '',
-            content: ''
-        }
-    }
-
-    handleSubmit(e) {
-        e.preventDefault();
-        let author = this.state.author.trim();
-        let content = this.state.content.trim();
-        if (!author || !content) {
-            return;
-        }
-        this.props.onCommentSubmit({author, content});
-        this.setState({
-            author: '',
-            content: ''
-        })
-
-    }
-
-    handleInputAuther(e) {
-        this.setState({
-            author: e.target.value
-        })
-    }
-
-    handleContent(e) {
-        this.setState({
-            content: e.target.value
-        })
-    }
-
-    render() {
-        return (
-            <form className="commentForm" onSubmit={this.handleSubmit.bind(this)}>
-                <div className="commentInputFormc1">
-                    <label htmlFor="">用户名：</label>
-                    <input type="text" onChange={this.handleInputAuther.bind(this)}/>
-                </div>
-                <div className="commentInputFormc2">
-                    <label htmlFor="">评论内容</label>
-                    <textarea defaultValue={'123'} name="" id="" cols="30" rows="10"
-                              onChange={this.handleContent.bind(this)}></textarea>
-                </div>
-                <input type="submit" value="发布"/>
-            </form>
-        )
-    }
-}
 
 class CommentList extends Component {
-    constructor(props) {
-        super(props);
-    }
+
+    // static defaultProps = {
+    //     comments: []
+    // }
 
     render() {
         return (
             <div>
-                <Comment list={this.props.dataList}/>
+                {
+                    this.props.comments.map((comment, i) => {
+                        return (
+                            <Comment key={i} comment={comment}/>
+                        )
+                    })
+                }
+
             </div>
         )
     }
 }
 
 class Comment extends Component {
-    constructor(props) {
-        super(props);
-    }
 
     render() {
         return (
-            <div>{
-                this.props.list.length ?
-                    this.props.list.map((comment,index) => {
-                        return (
-                            <div key={index}>
-                                <span>{comment.author}</span><span>{comment.content}</span>
-                            </div>
-                        )
-                    }) : null
-            }
+            <div className='comment'>
+                <div className='comment-user'>
+                    <span>{this.props.comment.username} </span>：
+                </div>
+                <p>{this.props.comment.content}</p>
             </div>
         )
     }
 }
+
 ReactDOM.render(
-    <CommentApp />,
+    <CommentApp/>,
     document.getElementById('root')
 )

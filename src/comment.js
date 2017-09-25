@@ -10,6 +10,12 @@ class CommentApp extends Component {
         }
     }
 
+    componentWillMount() {
+        if (localStorage.getItem('comments')) {
+            this.state.comments = JSON.parse(localStorage.getItem('comments'));
+        }
+    }
+
     handleSubmitComment(comment) {
         if (!comment) return;
         if (!comment.username) return alert('请输入用户名');
@@ -18,13 +24,30 @@ class CommentApp extends Component {
         this.setState({
             comments: this.state.comments
         });
+        localStorage.setItem(
+            'comments', JSON.stringify(this.state.comments)
+        )
+        localStorage.setItem(
+            'username', comment.username
+        )
+
+    }
+
+    deleteComments(i) {
+        this.state.comments.splice(i, 1);
+        this.setState({
+            comments: this.state.comments
+        });
+        localStorage.setItem(
+            'comments', JSON.stringify(this.state.comments)
+        );
     }
 
     render() {
         return (
             <div className="wrapper">
                 <CommentInput onSubmit={this.handleSubmitComment.bind(this)}/>
-                <CommentList comments={this.state.comments}/>
+                <CommentList onDelete={this.deleteComments.bind(this)} comments={this.state.comments}/>
             </div>
         );
     }
@@ -40,6 +63,10 @@ class CommentInput extends Component {
         }
     }
 
+    componentWillMount() {
+        if (localStorage.getItem('username')) this.state.username = localStorage.getItem('username');
+    }
+
     handleUsernameChange(event) {
         this.setState({
             username: event.target.value
@@ -47,6 +74,7 @@ class CommentInput extends Component {
     }
 
     handleContentChange(event) {
+        event.target.value.replace();
         this.setState({
             content: event.target.value
         })
@@ -57,9 +85,14 @@ class CommentInput extends Component {
             this.props.onSubmit({
                 username: this.state.username,
                 content: this.state.content,
-            })
+                time: new Date().toDateString()
+            });
         }
         this.setState({content: ''})
+    }
+
+    componentDidMount() {
+        this.textarea.focus();
     }
 
     render() {
@@ -77,6 +110,9 @@ class CommentInput extends Component {
                     <span className='comment-field-name'>评论内容：</span>
                     <div className='comment-field-input'>
                         <textarea
+                            ref={(textarea) => {
+                                this.textarea = textarea
+                            }}
                             value={this.state.content}
                             onChange={this.handleContentChange.bind(this)}/>
                     </div>
@@ -95,9 +131,9 @@ class CommentInput extends Component {
 
 class CommentList extends Component {
 
-    // static defaultProps = {
-    //     comments: []
-    // }
+    static defaultProps = {
+        comments: []
+    }
 
     render() {
         return (
@@ -105,7 +141,7 @@ class CommentList extends Component {
                 {
                     this.props.comments.map((comment, i) => {
                         return (
-                            <Comment key={i} comment={comment}/>
+                            <Comment handleDelete={this.props.onDelete.bind(this, i)} key={i} comment={comment}/>
                         )
                     })
                 }
@@ -123,7 +159,9 @@ class Comment extends Component {
                 <div className='comment-user'>
                     <span>{this.props.comment.username} </span>：
                 </div>
-                <p>{this.props.comment.content}</p>
+                <p dangerouslySetInnerHTML={{__html:this.props.comment.content}} />
+                <div className='comment-delete' onClick={this.props.handleDelete.bind(this)}>x</div>
+                <div className='comment-createdtime'>{this.props.comment.time}</div>
             </div>
         )
     }

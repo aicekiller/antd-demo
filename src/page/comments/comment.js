@@ -33,7 +33,7 @@ class CommentApp extends Component {
 
     }
 
-    deleteComments(i) {
+    handleDeleteComments(i) {
         this.state.comments.splice(i, 1);
         this.setState({
             comments: this.state.comments
@@ -47,7 +47,7 @@ class CommentApp extends Component {
         return (
             <div className="wrapper">
                 <CommentInput onSubmit={this.handleSubmitComment.bind(this)}/>
-                <CommentList onDelete={this.deleteComments.bind(this)} comments={this.state.comments}/>
+                <CommentList onDelete={this.handleDeleteComments.bind(this)} comments={this.state.comments}/>
             </div>
         );
     }
@@ -85,7 +85,7 @@ class CommentInput extends Component {
             this.props.onSubmit({
                 username: this.state.username,
                 content: this.state.content,
-                time: new Date().toDateString()
+                time: +new Date()
             });
         }
         this.setState({content: ''})
@@ -141,7 +141,7 @@ class CommentList extends Component {
                 {
                     this.props.comments.map((comment, i) => {
                         return (
-                            <Comment handleDelete={this.props.onDelete.bind(this, i)} key={i} comment={comment}/>
+                            <Comment onDelete={this.props.onDelete.bind(this, i)} key={i} comment={comment}/>
                         )
                     })
                 }
@@ -152,6 +152,39 @@ class CommentList extends Component {
 }
 
 class Comment extends Component {
+    constructor() {
+        super();
+        this.state = {
+            timeString: ''
+        }
+    }
+
+    _updateTimeString() {
+        const comment = this.props.comment;
+        const duration = (+Date.now() - comment.time) / 1000;
+        this.setState({
+            timeString: duration > 60 ? `${Math.round(duration / 60)}分钟前` : `${Math.round(Math.max(duration, 1))}秒前`
+        })
+    }
+
+    _getProcessedContent(content) {
+        return content
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;")
+            .replace(/`([\S\s]+?)`/g, '<code>$1</code>');
+    }
+
+    componentWillMount() {
+        this._updateTimeString();
+        this._timer = setInterval(this._updateTimeString.bind(this), 5000);
+    }
+
+    componentWillUnmount() {
+        clearInterval(this._timer);
+    }
 
     render() {
         return (
@@ -159,9 +192,9 @@ class Comment extends Component {
                 <div className='comment-user'>
                     <span>{this.props.comment.username} </span>：
                 </div>
-                <p dangerouslySetInnerHTML={{__html:this.props.comment.content}} />
-                <div className='comment-delete' onClick={this.props.handleDelete.bind(this)}>x</div>
-                <div className='comment-createdtime'>{this.props.comment.time}</div>
+                <p dangerouslySetInnerHTML={{__html: this._getProcessedContent(this.props.comment.content)}}/>
+                <div className='comment-delete' onClick={this.props.onDelete.bind(this)}>x</div>
+                <div className='comment-createdtime'>{this.state.timeString}</div>
             </div>
         )
     }

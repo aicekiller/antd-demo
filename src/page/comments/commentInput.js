@@ -1,16 +1,19 @@
-import React, {Component} from 'react';
+import React, {Component, PropTypes} from 'react';
+import wrapWithLoadData from './localStorageActions';
 
 class CommentInput extends Component {
-    constructor() {
-        super()
-        this.state = {
-            username: '',
-            content: ''
-        }
+    static propTypes = {
+        onSubmit: PropTypes.func,
+        data: PropTypes.any,
+        saveData: PropTypes.func.isRequired
     }
 
-    componentWillMount() {
-        if (localStorage.getItem('username')) this.state.username = localStorage.getItem('username');
+    constructor(props) {
+        super(props);
+        this.state = {
+            username: props.data,
+            content: ''
+        }
     }
 
     handleUsernameChange(event) {
@@ -20,7 +23,6 @@ class CommentInput extends Component {
     }
 
     handleContentChange(event) {
-        event.target.value.replace();
         this.setState({
             content: event.target.value
         })
@@ -34,7 +36,8 @@ class CommentInput extends Component {
                 time: +new Date()
             });
         }
-        this.setState({content: ''})
+        this.setState({content: ''});
+        this.props.saveData(this.state.username);
     }
 
     componentDidMount() {
@@ -74,4 +77,5 @@ class CommentInput extends Component {
     }
 }
 
+CommentInput = wrapWithLoadData(CommentInput, 'username');
 export default CommentInput;

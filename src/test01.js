@@ -12,17 +12,85 @@ class Card extends Component {
         )
     }
 }
-class BlackBorderContainer extends Component {
-    render() {
-        return (
-            <div>
-                {this.props.children.map((item, index) => {
-                    return (
-                        <div className="border">{item}</div>
-                    )
-                })}
-            </div>
-        )
+const loadAndRefresh = (url) => {
+    return (WrappedComponent) => {
+        class NewComponent extends Component {
+            constructor() {
+                super();
+                this.state = {
+                    content: ''
+                }
+            }
+
+            componentWillMount() {
+                this._loadingData();
+            }
+
+            async _loadingData() {
+                this.setState({
+                    content: '数据加载中...'
+                });
+                const content = await getData(url);
+                this.setState({content});
+            }
+
+            handleData() {
+                this._loadingData();
+            }
+
+            render() {
+                return (
+                    <WrappedComponent
+                        content={this.state.content}
+                        refresh={this.handleData.bind(this)}
+                        {...this.props}
+                    />
+                )
+            }
+        }
+        return NewComponent;
+    }
+}
+const makeProvider = (data) => (Post) => {
+    class NewComponent extends Component {
+        static childContextTypes = {
+            data: PropTypes.any.isRequired
+        }
+
+        constructor() {
+            super();
+            this.state = {
+                data: data
+            }
+        }
+
+        getChildContext() {
+            return this.setState({
+                data: this.state.data
+            })
+        }
+
+        render() {
+            return (
+                <Post
+                    {...this.props}
+                />
+            )
+        }
+    }
+    return NewComponent;
+}
+class EventEmitter {
+    on(eventName, func) {
+        window.addEventListener(eventName, func, false);
+    }
+
+    emit(eventName, arg1, arg2, ...rest) {
+
+    }
+
+    off(eventName, func) {
+
     }
 }
 

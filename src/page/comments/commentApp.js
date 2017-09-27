@@ -1,21 +1,22 @@
-import React, {Component} from 'react';
+import React, {Component, PropTypes} from 'react';
 
 import CommentInput from './commentInput';
 import CommentList from './commentsList';
+import wrapWithLoadData from './localStorageActions';
 import './comments.css';
 
 
 class CommentApp extends Component {
-    constructor() {
-        super();
-        this.state = {
-            comments: []
-        }
+
+    static propTypes = {
+        data: PropTypes.any,
+        saveData: PropTypes.func.isRequired
     }
 
-    componentWillMount() {
-        if (localStorage.getItem('comments')) {
-            this.state.comments = JSON.parse(localStorage.getItem('comments'));
+    constructor(props) {
+        super(props);
+        this.state = {
+            comments: props.data
         }
     }
 
@@ -27,12 +28,8 @@ class CommentApp extends Component {
         this.setState({
             comments: this.state.comments
         });
-        localStorage.setItem(
-            'comments', JSON.stringify(this.state.comments)
-        )
-        localStorage.setItem(
-            'username', comment.username
-        )
+        this.props.saveData(this.state.comments);
+
 
     }
 
@@ -41,9 +38,7 @@ class CommentApp extends Component {
         this.setState({
             comments: this.state.comments
         });
-        localStorage.setItem(
-            'comments', JSON.stringify(this.state.comments)
-        );
+        this.props.saveData(this.state.comments);
     }
 
     render() {
@@ -56,4 +51,5 @@ class CommentApp extends Component {
     }
 }
 
+CommentApp = wrapWithLoadData(CommentApp, 'comments');
 export default CommentApp;

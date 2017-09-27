@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
+import './game.css';
 
 function calculateWinner(squares) {
     const lines = [
@@ -159,4 +158,4 @@ class Game extends Component {
     }
 }
 
-ReactDOM.render(<Game />, document.getElementById('root'));
+export default Game;

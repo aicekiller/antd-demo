@@ -1,4 +1,5 @@
-import React, {Component, PropTypes} from 'react';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 
 import CommentInput from './commentInput';
 import CommentList from './commentsList';
@@ -49,6 +50,11 @@ class CommentApp extends Component {
             </div>
         );
     }
+}
+
+CommentApp.propTypes = {
+    data: PropTypes.any,
+    saveData: PropTypes.func.isRequired
 }
 
 CommentApp = wrapWithLoadData(CommentApp, 'comments');

@@ -1,13 +1,9 @@
-import React, {Component, PropTypes} from 'react';
+import React, {Component} from 'react';
+import PropTypes from 'prop-types';
+
 import wrapWithLoadData from './localStorageActions';
 
 class CommentInput extends Component {
-    static propTypes = {
-        onSubmit: PropTypes.func,
-        data: PropTypes.any,
-        saveData: PropTypes.func.isRequired
-    }
-
     constructor(props) {
         super(props);
         this.state = {
@@ -75,6 +71,11 @@ class CommentInput extends Component {
             </div>
         )
     }
+}
+CommentInput.propTypes = {
+    onSubmit: PropTypes.func,
+    data: PropTypes.any,
+    saveData: PropTypes.func.isRequired
 }
 
 CommentInput = wrapWithLoadData(CommentInput, 'username');

@@ -4,7 +4,7 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {BrowserRouter as Router, Route, Link} from 'react-router-dom';
+import {BrowserRouter as Router, Route} from 'react-router-dom';
 
 import routesconfig from './routers';
 
@@ -12,9 +12,9 @@ ReactDOM.render(
     <Router>
         <div>
             {
-                routesconfig.map((item) => {
+                routesconfig.map((item, index) => {
                     return (
-                        <Route path={item.path} component={item.component}></Route>
+                        <Route key={index} path={item.path} component={item.component}></Route>
                     )
                 })
             }

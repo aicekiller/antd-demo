@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Observer Pattern</title>
+</head>
+<body>
+<script src="http://mockjs.com/dist/mock.js"></script>
+<script src="http://cdn.bootcss.com/jquery/1.11.3/jquery.js"></script>
+<script>
+    class EventEmitter {
+        constructor() {
+            this.eventList = {};
+        }
+
+        on(eventName, func) {
+            if (!this.eventList[eventName]) {
+                this.eventList[eventName] = [];
+            }
+            this.eventList[eventName].push(func);
+        }
+
+        emit(eventName, ...args) {
+            let fns = this.eventList[eventName];
+            if (!fns || !fns.length) return;
+            fns.forEach(func => func(...args));
+        }
+
+        off(eventName, func) {
+            let fns = this.eventList[eventName];
+            if (fns.includes(func)) {
+                const index = fns.indexOf(func);
+                fns.splice(index, 1);
+            }
+        }
+    }
+
+    const emitter = new EventEmitter();
+
+    const avatar = (() => {
+        //订阅登录接口
+        emitter.on('loginSucc', data => {
+            avatar.setAvatar(data);
+        });
+        return {
+            setAvatar: data => {
+                console.log('显示用户' + data['name'] + '的头像');
+            }
+        };
+    })();
+
+    const message = (() => {
+        emitter.on('loginSucc', data => {
+            message.setMessage(data);
+        });
+        return {
+            setMessage: data => {
+                setTimeout(() => {
+                    console.log('显示用户' + data['name'] + '的消息');
+                }, 1000);
+            }
+        }
+    })();
+
+    Mock.mock('http://ajax.login.com', {
+        'name': '@name',
+        'age|1-100': 1
+    });
+    
+    $.ajax({
+        url: 'http://ajax.login.com',
+        dataType: 'json',
+        success: data => {
+            emitter.emit('loginSucc', data)
+        }
+    });
+    //    const sayHi = (name) => console.log(`Hello ${name}`);
+    //    const sayHi2 = (name) => console.log(`Good night, ${name}`)
+    //
+    //    emitter.on('hi', sayHi);
+    //    emitter.on('hi', sayHi2);
+    //    emitter.emit('hi', 'zhangsan');
+    //
+    //    emitter.off('hi', sayHi);
+    //    emitter.emit('hi', 'lisi');
+    //
+    //    const emitter2 = new EventEmitter()
+    //    emitter2.on('hi', (name, age) => {
+    //        console.log(`I am ${name}, and I am ${age} years old`)
+    //    })
+    //    emitter2.emit('hi', 'Jerry', 12);
+</script>
+</body>
+</html>

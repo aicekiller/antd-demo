@@ -15,7 +15,7 @@ ReactDOM.render(
     <Router history={history}>
         <div>
             {
-                routesconfig.map((item, index, arr) => {
+                routesconfig.map((item, index) => {
                     return (
                         <Route key={index} path={item.path} component={item.component}></Route>
                     )

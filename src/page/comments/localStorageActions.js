@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 
 export default (WrappedComponent, name) => {
     class LocalStorageActions extends Component {
+
         constructor() {
             super();
             this.state = {
@@ -11,7 +12,7 @@ export default (WrappedComponent, name) => {
         }
 
         componentWillMount() {
-            let data = localStorage.getItem(name);
+            let data = localStorage.getItem(name) || [];
             try {
                 this.setState({
                     data: JSON.parse(data)

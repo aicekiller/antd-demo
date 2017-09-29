@@ -10,7 +10,7 @@ import './comments.css';
 class CommentApp extends Component {
 
     static propTypes = {
-        data: PropTypes.any,
+        data: PropTypes.array,
         saveData: PropTypes.func.isRequired
     }
 
@@ -50,11 +50,6 @@ class CommentApp extends Component {
             </div>
         );
     }
-}
-
-CommentApp.propTypes = {
-    data: PropTypes.any,
-    saveData: PropTypes.func.isRequired
 }
 
 CommentApp = wrapWithLoadData(CommentApp, 'comments');

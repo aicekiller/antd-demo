@@ -27,6 +27,7 @@
     "history": "^4.7.2",
     "html-webpack-plugin": "2.29.0",
     "jest": "20.0.4",
+    "node-sass": "^4.5.3",
     "object-assign": "4.1.1",
     "postcss-flexbugs-fixes": "3.2.0",
     "postcss-loader": "2.0.6",
@@ -39,13 +40,15 @@
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
     "redux": "^3.7.2",
+    "sass-loader": "^6.0.6",
     "style-loader": "0.18.2",
     "sw-precache-webpack-plugin": "0.11.4",
     "url-loader": "0.5.9",
     "webpack": "3.5.1",
     "webpack-dev-server": "2.7.1",
     "webpack-manifest-plugin": "1.2.1",
-    "whatwg-fetch": "2.0.3"
+    "whatwg-fetch": "2.0.3",
+    "zepto": "^1.2.0"
   },
   "devDependencies": {},
   "scripts": {

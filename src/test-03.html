@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+<div id="target" class="target">123</div>
+<script
+        src="http://code.jquery.com/jquery-3.2.1.js"
+        integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="
+        crossorigin="anonymous"></script>
+<script>
+    var foo = new Function();
+    function woo() { }
+    var fooObj = new foo()
+    var wooObj = new woo()
+    window.onload = function () {
+        console.log("对象")
+        console.dir(Function.__proto__)
+        console.dir(foo.__proto__)
+        console.dir(woo.__proto__)
+        console.dir(fooObj instanceof foo)
+        console.dir(wooObj instanceof woo)
+        console.dir(foo instanceof Function)
+        console.dir(woo instanceof Function)
+        console.dir(Function instanceof Function)
+        console.log("函数")
+        console.dir(Function.prototype)
+        console.dir(foo.prototype)
+        console.dir(woo.prototype)
+    }
+</script>
+</body>
+</html>

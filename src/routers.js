@@ -17,7 +17,7 @@ const routesconfig = [
         component: Index
     },
     {
-        path: "/todoList",
+        path: "/TodoList",
         component: TodoList
     }
 ];

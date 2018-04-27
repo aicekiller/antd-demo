@@ -1,7 +1,7 @@
 import CommentApp from './page/comments/commentApp';
 import Game from './page/game/game';
 import Index from './page/theme/Index';
-import TodoList from './page/todoList/todoList';
+/*import TodoList from './page/todoList/todoList';*/
 
 const routesconfig = [
     {
@@ -16,10 +16,10 @@ const routesconfig = [
         path: "/theme",
         component: Index
     },
-    {
-        path: "/TodoList",
+    /*{
+        path: "/todoList",
         component: TodoList
-    }
+    }*/
 ];
 
 

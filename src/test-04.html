@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Vue 双向数据绑定</title>
+</head>
+<body>
+<div id="app">
+    {{obj.a}}
+</div>
+<script src="https://unpkg.com/vue@2.5.4/dist/vue.js"></script>
+<script>
+    var a = {b: 1}
+    console.dir(a);
+
+    var Book = {}
+    var name = '';
+    //Object.defineProperty方法会直接在一个对象上定义一个新属性，或者修改一个对象的现有属性， 并返回这个对象.
+    Object.defineProperty(Book, 'name', {
+        set: function (value) {
+            name = value;
+            console.log('你取了一个书名叫做' + value);
+        },
+        get: function () {
+            return '《' + name + '》'
+        }
+    })
+    Book.name = 'vue权威指南';
+    console.dir(Book);
+
+    var app = new Vue({
+        el: '#app',
+        data() {
+            return {
+                obj: {
+                    a: 1
+                }
+            }
+        },
+        created() {
+            console.dir(this.obj);
+        }
+    })
+
+    function defineReactive(data, key, val) {
+        observe(val);
+        Object.defineProperty(data, key, {
+            enumerable: true,
+            configurable: true,
+            get: function () {
+                return val;
+            },
+            set: function (newVal) {
+                val = newVal;
+                console.log('属性' + key + '已经被监听了，现在值为：“' + newVal.toString() + '”');
+            }
+        })
+    }
+    function observe(data) {
+        if (!data || typeof data !== 'object') {
+            return;
+        }
+        Object.keys(data).forEach(function () {
+            defineReactive(data, key, data[key]);
+        })
+    }
+</script>
+</body>
+</html>

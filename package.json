@@ -50,7 +50,9 @@
     "whatwg-fetch": "2.0.3",
     "zepto": "^1.2.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "underscore": "^1.9.0"
+  },
   "scripts": {
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",

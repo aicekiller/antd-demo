@@ -1,38 +1,72 @@
 <!doctype html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>模拟call,apply,bind</title>
 </head>
+
 <body>
-<div id="target" class="target">123</div>
-<script
-        src="http://code.jquery.com/jquery-3.2.1.js"
-        integrity="sha256-DZAnKJ/6XZ9si04Hgrsxu/8s717jcIzLy3oi35EouyE="
-        crossorigin="anonymous"></script>
-<script>
-    var foo = new Function();
-    function woo() { }
-    var fooObj = new foo()
-    var wooObj = new woo()
-    window.onload = function () {
-        console.log("对象")
-        console.dir(Function.__proto__)
-        console.dir(foo.__proto__)
-        console.dir(woo.__proto__)
-        console.dir(fooObj instanceof foo)
-        console.dir(wooObj instanceof woo)
-        console.dir(foo instanceof Function)
-        console.dir(woo instanceof Function)
-        console.dir(Function instanceof Function)
-        console.log("函数")
-        console.dir(Function.prototype)
-        console.dir(foo.prototype)
-        console.dir(woo.prototype)
-    }
-</script>
+
+    <script>
+        'use strict';
+        var value = 2;
+
+        var obj = {
+            value: 1
+        }
+
+        function test(name, age) {
+            console.log(name);
+            //        console.log(age);
+            //        console.log(this.value);
+            return {
+                value: this.value,
+                name: name,
+                age: age,
+            }
+        }
+        Function.prototype.call2 = function (context, ...args) {
+            var context = context || window;
+            context.fn = this;
+            //        var args = [];
+            //        for (var i = 1, len = arguments.length; i < len; i++) {
+            //            args.push('arguments[' + i + ']');
+            //        }
+            //        //eval函数会将传入的字符串当做 JavaScript 代码进行执行。
+            //        var result = eval('context.fn(' + args + ')');
+            let result = context.fn(...args);
+            delete context.fn;
+            return result;
+        }
+        //console.log(test.call2(obj, 'zhangsan', 18));
+        Function.prototype.apply2 = function (context, arr) {
+            var context = Object(context) || window;
+            context.fn = this;
+            var result;
+            if (!arr) {
+                result = context.fn();
+            } else {
+                var args = [];
+                for (var i = 0, len = arr.length; i < len; i++) {
+                    args.push('arr[' + i + ']');
+                }
+                result = eval('context.fn(' + args + ')');
+            }
+            delete context.fn;
+            return result;
+        }
+        console.log(test.apply2(window, ['zhangsan', 18]));
+
+        Function.prototype.bind2 = function (context, ...args) {
+
+            return function () {
+
+            }
+        }
+    </script>
 </body>
+
 </html>

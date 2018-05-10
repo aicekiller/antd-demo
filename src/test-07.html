@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+<script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+<script type="text/babel">
+    //var _ = require('underscore');
+    import _ from "underscore";
+
+    function log() {
+        console.log.apply(console, arguments);
+    }
+    console.dir(_);
+    function Person(name, age) {
+        this.name = name;
+        this.age = age;
+        this.friends = [1, 2, 3];
+    }
+
+    Person.prototype = {
+        constructor: Person,
+        sayName: function () {
+            log(this.name)
+        }
+    }
+
+    var person1 = new Person('zhangsan', 11);
+    var person2 = new Person('lisi', 12);
+    person1.friends.push(4);
+    log(person2.friends);
+</script>
+</body>
+</html>

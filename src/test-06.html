@@ -10,11 +10,13 @@
         body {
             padding: 50px;
         }
+
         .demo {
             background: #ccc;
             height: 100px;
             transform: scale(1);
         }
+
         .fixed-box {
             position: fixed;
             top: 0;
@@ -32,11 +34,39 @@
     <div class="fixed-box"></div>
 </div>
 <script>
-    Function.prototype.call2 = function(context){
+    Function.prototype.apply2 = function (context, arr) {
+        var context = Object(context) || window;
         context.fn = this;
-        context.fn();
-        delete context.fn;
+
+        var result;
+        if (!arr) {
+            result = context.fn();
+        }
+        else {
+            // var args = [];
+            // for (var i = 0, len = arr.length; i < len; i++) {
+            //     args.push('arr[' + i + ']');
+            // }
+            // result = eval('context.fn(' + args + ')')
+
+            result = eval('context.fn(' + arr+ ')')
+        }
+
+        delete context.fn
+        return result;
     }
+
+    // 测试一下
+    var foo = {
+        value: 1
+    };
+
+    function bar() {
+        console.log(this.value);
+    }
+
+    bar.apply2(foo, ['kevin']);
+
 </script>
 </body>
 </html>

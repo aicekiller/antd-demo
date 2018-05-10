@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>underscore.js</title>
+</head>
+<body>
+<!--<script src="../node_modules/underscore/underscore.js"></script>-->
+<script>
+
+    (function () {
+        /**
+        *  js有个全局对象`self` http://www.zhangxinxu.com/wordpress/2017/07/js-window-self/
+        *  在node 环境下只有global
+        * */
+        var root = typeof self === "object" && self.self === self && self ||
+            typeof global === "object" && global.global === global && global ||
+            this ||
+            {};
+        /**
+         * 将原来全局环境中的变量 `_` 赋值给变量 previousUnderscore 进行缓存
+         * */
+        var previousUnderscore = root._;
+
+        /**
+         *
+         * */
+        var _ = function (obj) {
+            if (obj instanceof _) return obj;
+            if (!(this instanceof _)) return new _(obj);
+            this._wrapped = obj;
+        }
+
+        if (typeof exports != 'undefined' && !exports.nodeType) {
+            if (typeof module != 'undefined' && !module.nodeType && module.exports) {
+                exports = module.exports = _;
+            }
+            exports._ = _;
+        } else {
+            root._ = _;
+        }
+
+        _.log = function(){
+            console.log(1);
+        }
+        _.noConflict = function () {
+            root._ = previousUnderscore;
+            return this;
+        }
+    }())
+    console.log(_().log());
+</script>
+</body>
+</html>

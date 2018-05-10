@@ -6,9 +6,53 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        .wrap {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, .5);
+            top: 0;
+            left: 0;
+            z-index: 100;
+        }
+
+        .content {
+            width: 320px;
+            background: #fff;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            justify-content: center;
+        }
+
+        img {
+            width: 100%;
+        }
+
+        .btn {
+            width: 50px;
+            height: 50px;
+            position: absolute;
+            bottom: 120px;
+
+        }
+    </style>
 </head>
 <body>
-
+<a href="###">测试底部</a>
+<div class="wrap">
+    <div class="content">
+        <img width="320" src="http://img0.puzeyf.com/cmsres/20180424/26ab1349-37d2-42a9-84ab-9f1f4b1b6c3b.png" alt="">
+        <div class="btn">领取优惠券</div>
+    </div>
+</div>
 <script>
     function test() {
         console.log(foo);
